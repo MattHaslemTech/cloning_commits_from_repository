@@ -93,30 +93,37 @@ while verify_check.lower() != "y":
 total_commits = 0
 found_count = 0
 successfully_cloned_count = 0
-for commit in Repository(REPO_SRC).traverse_commits():
 
-    total_commits += 1
+try:
+    for commit in Repository(REPO_SRC).traverse_commits():
 
-    # If the commit contains the message we're looking for.
-    if COMMIT_MSG_STR.lower() in commit.msg.lower():
-        hash = commit.hash
-        c_date = commit.committer_date.strftime('%Y-%d-%m')
+        total_commits += 1
 
-        print("\n===================== COMMIT FOUND =====================================")
-        print(f"Commit => {commit.msg}")
-        print(f"Hash => {hash}")
-        # Set output path
-        output_folder = f"{c_date} ({hash})"
-        clone_path = os.path.join(PROJECT_PATH, f"{OUTPUT_DIR}/{output_folder}")
+        # If the commit contains the message we're looking for.
+        if COMMIT_MSG_STR.lower() in commit.msg.lower():
+            hash = commit.hash
+            c_date = commit.committer_date.strftime('%Y-%d-%m')
 
-        # Clone the commit
-        if clone_it(hash, clone_path):
-            # Create the text file
-            if write_it(commit, clone_path):
-                successfully_cloned_count += 1
+            print("\n===================== COMMIT FOUND =====================================")
+            print(f"Commit => {commit.msg}")
+            print(f"Hash => {hash}")
+            # Set output path
+            output_folder = f"{c_date} ({hash})"
+            clone_path = os.path.join(PROJECT_PATH, f"{OUTPUT_DIR}/{output_folder}")
 
-        found_count += 1
-        print("========================================================================")
+            # Clone the commit
+            if clone_it(hash, clone_path):
+                # Create the text file
+                if write_it(commit, clone_path):
+                    successfully_cloned_count += 1
+
+            found_count += 1
+            print("========================================================================")
+
+except Exception as e:
+    print(f"\n[ERROR] Cannot read commits from repo: {REPO_SRC}")
+    exit()
+
 
 print("--------------- Results ------------------------")
 print(f"\nLooked through {total_commits} commits.")
