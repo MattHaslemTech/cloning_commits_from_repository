@@ -107,6 +107,7 @@ try:
             print("\n===================== COMMIT FOUND =====================================")
             print(f"Commit => {commit.msg}")
             print(f"Hash => {hash}")
+            print(f"Date => {c_date}")
             # Set output path
             output_folder = f"{c_date} ({hash})"
             clone_path = os.path.join(PROJECT_PATH, f"{OUTPUT_DIR}/{output_folder}")
