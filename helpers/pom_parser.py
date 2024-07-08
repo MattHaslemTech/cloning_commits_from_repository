@@ -85,71 +85,13 @@ def parse_pom(pom_file):
                 version_tag = version.split('${')[1].split('}')[0].split(".version")[0]
                 if version_tag in _s.FOUND_VERSIONS:
                     version = _s.FOUND_VERSIONS[version_tag]
-            # dependency_dict["version"] = version
             dependency_obj.set_version(version)
         else:
             print(f"Version Not found..")
 
         dependencies.append(dependency_obj)
 
-    # for d in dependencies:
-    #     print(d)
 
     return dependencies
 
 
-def compare_poms_test():
-    # List all entries in the directory
-    folder_path = "C:/Users/MattHaslem/Desktop/233_Analytics/projects/AviaGames/cloning_commits_from_repository/output_repos"
-    folder_path = os.path.join(_s.PROJECT_PATH, f"{_s.OUTPUT_DIR}")
-    entries = os.listdir(folder_path)
-
-    # Filter out files, keeping only directories
-    directories = [entry for entry in entries if os.path.isdir(os.path.join(folder_path, entry))]
-
-    all_versions = {}
-    for d in directories:
-        dir = os.path.join(folder_path, d)
-        pom_file = find_main_pom(dir)
-
-        tree = ET.parse(pom_file)
-        root = tree.getroot()
-
-        nm = root.tag.split('}')[0].strip('{')
-        namespace = {'m': nm}
-
-
-        # Get the project version
-        versions_dict = {}  # Dict to hold all the versions
-
-        project_version = root.find('m:version', namespace).text
-        versions_dict["project"] = project_version
-
-        # Get all the versions from properties
-        for property in root.find('m:properties', namespace):
-            prop_tag_name = property.tag.split('}')[1].split('.')[0]
-            prop_value = property.text
-            versions_dict[prop_tag_name] = prop_value
-
-        all_versions[d] = versions_dict
-        # all_versions.append(versions_dict)
-        # print(f"Dir => {d}")
-        # print(versions_dict)
-
-    # Compare the versions
-    versions_copy = []
-    for d, v in all_versions.items():
-        print(d)
-        print(v)
-        versions_copy.append(v)
-    # for d, v in all_versions.items():
-    #     for v2 in versions_copy:
-    #         if v != v2:
-    #             print(d)
-    #             print(v)
-    #             print(v2)
-    #             versions_copy.pop(0)
-    #             continue
-
-    print(f"Dir length: {len(directories)}")
-    print(f"Versions length: {len(all_versions)}")
